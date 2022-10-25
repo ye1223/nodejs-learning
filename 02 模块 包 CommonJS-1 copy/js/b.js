@@ -2,6 +2,6 @@ function test(){
     console.log('test-bbb')
 }
 
-var result=upper('levi')
-
-console.log(result)
+var a=require('./a')
+console.log(a.upper())
+module.exports=test
