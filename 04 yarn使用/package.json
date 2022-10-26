@@ -1,0 +1,11 @@
+{
+  "name": "aaa",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "author": "Levi",
+  "license": "MIT",
+  "dependencies": {
+    "md5": "^2.3.0"
+  }
+}
