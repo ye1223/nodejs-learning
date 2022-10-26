@@ -8,13 +8,11 @@
 </head>
 <body>
     <script>
-        let a=JSON.stringify({
-            name:"levi",
-            age:1
+        fetch("http://localhost:3000/api/aaa")
+        .then(res=>res.json())
+        .then(res=>{
+            console.log(res)
         })
-        console.log(a,typeof a)
-
-        console.log(a.json())
     </script>
 </body>
 </html>
