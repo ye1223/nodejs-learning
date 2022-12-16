@@ -8,7 +8,7 @@ console.log(obj)
 /* 
     [Object: null prototype] {
   name: 'Levi',
-  age: '20',
+  age: '2 0',
   location: 'chongqing'
 }
 */
