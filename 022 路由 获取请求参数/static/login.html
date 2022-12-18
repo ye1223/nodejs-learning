@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+</head>
+
+<body>
+    login
+    <div>
+        <div>
+            用户名：
+            <input type="text" id="username">
+        </div>
+        <div>
+            密码：
+            <input type="password" id="password">
+        </div>
+        <div>
+            <button id="login">登陆-get</button>
+            <button id="login_post">登陆-post</button>
+        </div>
+    </div>
+
+    <script>
+        var loginBtn = document.querySelector("#login")
+        var loginBtn_post = document.querySelector("#login_post")
+        var username = document.querySelector("#username")
+        var password = document.querySelector("#password")
+
+        loginBtn.onclick = () => {
+            // console.log(username.value,password.value)
+            //get请求
+            fetch(`/api/login?username=${username.value}&&password=${password.value}`)
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                })
+        }
+        loginBtn_post.onclick = () => {
+            fetch(`/api/login-post`, {
+                method: "POST",
+                body: JSON.stringify({
+                    username: username.value,
+                    password: password.value
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => res.text()).then(res => {
+                console.log(res)
+            })
+
+        }
+    </script>
+</body>
+
+</html>

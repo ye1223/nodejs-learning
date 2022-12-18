@@ -5,7 +5,7 @@ function render(res,data,type=""){
 }
 
 const apiRouter = {
-    "/api/login":(res)=>{
+    "/api/login":(req,res)=>{
         render(res,`{"ok":"1"}`)
     }
 }
