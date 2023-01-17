@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>后台系统管理</h1>
+    <div>
+      <div>用户名：<input type="text" id="username"></div>
+      <div>密码：<input type="password" id="password"></div>
+      <div>年龄<input type="number" id="age"></div>
+      <div><button id="register">添加用户</button></div>
+    </div>
+
+    <hr>
+    <button id="update">更新用户</button>
+    <button id="delete">删除用户</button>
+    <hr>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <td>id</td>
+          <td>username</td>
+          <td>age</td>
+          <td>options</td>
+        </tr>
+
+        <tbody>
+          
+        </tbody>
+      </thead>
+    </table>
+
+    <script>
+      let register = document.querySelector("#register")
+      let username = document.querySelector("#username")
+      let password = document.querySelector("#password")
+      let age = document.querySelector("#age")
+
+      let update = document.querySelector("#update")
+      let deleteBtn = document.querySelector("#delete")
+
+      register.onclick = () =>{
+        console.log(username.value,password.value,age.value)
+
+        
+        fetch("/api/user",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            username:username.value,
+            password:password.value,
+            age:age.value
+          })
+        }).then(res=>res.json())
+        .then(res=>{
+          console.log(res)
+        })
+      }
+
+
+      update.onclick = () =>{
+      
+        fetch("/api/user/63bfdd2f285c34117a56661e",{
+          method:"PUT",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            username:"修改的名字",
+            password:"修改的密码",
+            age:1
+          })
+        }).then(res=>res.json())
+        .then(res=>{
+          console.log(res)
+        })
+      }
+        
+      deleteBtn.onclick = () =>{
+        fetch("/api/user/63bfdd2f285c34117a56661e",{
+          method:"DELETE"
+        })
+        .then(res=>res.json())
+        .then(res=>{
+          console.log(res)
+        })
+      }
+      
+      //获取列表
+      fetch("/api/user?page=1&limit=3").then(res=>res.json()).then(res=>{
+        console.log(res)
+
+        let tbody = document.querySelector("tbody")
+        tbody.innerHTML = res.map(item=>`
+          <tr>
+            <td>${item._id}</td>
+            <td>${item.username}</td>
+            <td>${item.age}</td>
+            <td>
+              <button onclick="update_td('${item._id}')">update</button>  
+              <button onclick="delete_td('${item._id}')">delete</button>  
+            </td>
+          </tr>
+        `).join("")
+      })
+
+      
+      
+      function update_td(id){
+       fetch(`/api/user/update/${id}`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          username:"test",
+          password:"test",
+          age:404
+        })
+        }).then(res=>res.json()).then(res=>{
+          console.log(res)
+       })
+      }
+
+      function delete_td(id){
+        fetch(`/api/user/delete/${id}`).then(res=>res.json()).then(res=>{
+          console.log(res)
+        }
+        )
+      }
+    </script>
+
+
+  </body>
+</html>
