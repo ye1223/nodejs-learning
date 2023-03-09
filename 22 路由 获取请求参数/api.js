@@ -9,6 +9,7 @@ const apiRouter = {
         const myURL = new URL(req.url,"http://127.0.0.1")
         //URL这种方式只能获取get请求的数据
         // console.log(myURL.searchParams)
+        console.log(req)
         if(myURL.searchParams.get("username")==="Levi" 
             && myURL.searchParams.get("password")==="123456"){
                 render(res,`{"ok":1}`)
@@ -27,11 +28,11 @@ const apiRouter = {
        })
        req.on("end",()=>{
         // 数据收集终止
-        // console.log(post)
+        console.log('post数据',post)
         post = JSON.parse(post)
-        console.log(post)
         if(post.username==='Levi' && post.password==='123456'){
             render(res,`{"ok":1}`)
+
             
         }else{
             render(res,`{"ok":0}`)
