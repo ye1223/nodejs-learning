@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1>
+    <%= title %>
+  </h1>
+  <p>Welcome to <%= title %>
+  </p>
+
+  <div>
+    用户名 <input id="username" type="text">
+    <br>
+    密码：<input id="password" type="password">
+    <br>
+    年龄：<input type="number"  id="age">
+  </div>
+
+  <button class="addBtn">添加</button>
+  <button class="updateBtn">更新</button>
+  <button class="deleteBtn">删除</button>
+
+  <div class="list"></div>
+
+  <script>
+    const username = document.querySelector("#username")
+    const password = document.querySelector("#password")
+    const age = document.querySelector("#age")
+    const addBtn = document.querySelector(".addBtn")
+    const updateBtn = document.querySelector(".updateBtn")
+    const deleteBtn = document.querySelector(".deleteBtn")
+
+    const list = document.querySelector('.list')
+
+
+    addBtn.addEventListener("click",()=>{
+      
+      fetch("/users/add",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          username:username.value,
+          password:password.value,
+          age:age.value
+        })
+      }).then(res=>res.json()).then(res=>{
+        console.log(res)
+      })
+    })
+
+    updateBtn.addEventListener("click",()=>{
+      console.log("???")
+      fetch("/users/update/640c41dcf94f1b7aac6fa5b0",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          username:'修改',
+          password:'修改',
+          age:100000
+        })
+      }).then(res=>res.json()).then(res=>{
+        console.log(res)
+      })
+    })
+
+
+    deleteBtn.addEventListener("click",()=>{
+      fetch('/users/delete/640c41e9f94f1b7aac6fa5b2').then(res=>res.json()).then(res=>{
+        console.log(res)
+      })
+    })
+
+
+    fetch("/users/get").then(res=>res.json()).then(res=>{
+      console.log(res)
+  
+      list.innerHTML = res.map(item=>`
+      <span>${item.username}</span>
+      <span>${item.password}</span>
+      `)
+    })
+      
+
+  </script>
+</body>
+
+</html>

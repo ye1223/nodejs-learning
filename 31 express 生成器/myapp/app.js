@@ -18,7 +18,9 @@ app.use(logger('dev'));//#记录请求日志
 GET /stylesheets/style.css 200 10.776 ms - 111 */
 app.use(express.json());//!获取前端post过来的数据（json格式）
 app.use(express.urlencoded({ extended: false }));//! （form-urlencoded格式）
+
 app.use(cookieParser());//#解析cookie
+ 
 app.use(express.static(path.join(__dirname, 'public')));//!设置public文件夹托管静态资源
 
 app.use('/', indexRouter);//!应用级别路由
