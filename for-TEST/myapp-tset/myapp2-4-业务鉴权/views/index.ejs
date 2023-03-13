@@ -23,9 +23,9 @@
     年龄：<input type="number"  id="age">
   </div>
 
-  <button class="addBtn">添加</button>
-  <button class="updateBtn">更新</button>
-  <button class="deleteBtn">删除</button>
+  <button class="addBtn">添加用户</button>
+  <button class="updateBtn">更新用户</button>
+  <button class="deleteBtn">删除用户</button>
 
   <div class="list">
   
@@ -58,7 +58,7 @@
 
     addBtn.addEventListener("click",()=>{
       
-      fetch("/users/add",{
+      fetch("/api/users",{
         method:"POST",
         headers:{
           "Content-Type":"application/json"
@@ -75,8 +75,8 @@
 
     updateBtn.addEventListener("click",()=>{
       console.log("???")
-      fetch("/users/update/640c41dcf94f1b7aac6fa5b0",{
-        method:"POST",
+      fetch("/api/users/640c45cec483400536ecc0e7",{
+        method:"PUT",
         headers:{
           "Content-Type":"application/json"
         },
@@ -92,13 +92,15 @@
 
 
     deleteBtn.addEventListener("click",()=>{
-      fetch('/users/delete/640c41e9f94f1b7aac6fa5b2').then(res=>res.json()).then(res=>{
+      fetch('/api/users/640d9cd6272b9dc55d24aa6e',{
+        method:"DELETE"
+      }).then(res=>res.json()).then(res=>{
         console.log(res)
       })
     })
 
 
-    fetch("/users/get").then(res=>res.json()).then(res=>{
+    fetch("/api/users").then(res=>res.json()).then(res=>{
       console.log(res)
   
       list.innerHTML = res.map(item=>`
@@ -113,12 +115,22 @@
             <td>${item.username}</td>
             <td>${item.age}</td>
             <td>
-              <button onclick="delete(id=${item._id})">删除此项</button>  
+              <button onclick="deleteThis('${item._id}')">删除此项</button>  
             </td>
         </tr>
       `).join("")
     })
-      
+
+    function deleteThis(id){
+      console.log('aaa')
+      fetch(`/api/users/${id}`,{
+        method:"DELETE"
+      }).then(res=>res.json()).then(res=>{
+        location.reload()
+        console.log(res)
+      })
+    }
+    
 
   </script>
 </body>

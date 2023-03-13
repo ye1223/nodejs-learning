@@ -58,7 +58,7 @@
 
     addBtn.addEventListener("click",()=>{
       
-      fetch("/users/add",{
+      fetch("/api/users",{
         method:"POST",
         headers:{
           "Content-Type":"application/json"
@@ -75,8 +75,8 @@
 
     updateBtn.addEventListener("click",()=>{
       console.log("???")
-      fetch("/users/update/640c41dcf94f1b7aac6fa5b0",{
-        method:"POST",
+      fetch("/api/users/640c41dcf94f1b7aac6fa5b0",{
+        method:"PUT",
         headers:{
           "Content-Type":"application/json"
         },
@@ -92,13 +92,15 @@
 
 
     deleteBtn.addEventListener("click",()=>{
-      fetch('/users/delete/640c41e9f94f1b7aac6fa5b2').then(res=>res.json()).then(res=>{
+      fetch('/api/users/640c41e9f94f1b7aac6fa5b2',{
+        method:"DELETE"
+      }).then(res=>res.json()).then(res=>{
         console.log(res)
       })
     })
 
 
-    fetch("/users/get").then(res=>res.json()).then(res=>{
+    fetch("/api/users").then(res=>res.json()).then(res=>{
       console.log(res)
   
       list.innerHTML = res.map(item=>`
