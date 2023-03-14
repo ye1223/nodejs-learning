@@ -24,7 +24,7 @@
     <br>
     密码：<input id="password" type="password">
     <br>
-    年龄：<input type="number"  id="age">
+    年龄：<input type="number" id="age">
   </div>
 
   <button class="addBtn">添加用户</button>
@@ -32,7 +32,7 @@
   <button class="deleteBtn">删除用户</button>
 
   <div class="list">
-  
+
   </div>
 
   <table border="1">
@@ -43,39 +43,50 @@
         <td>age</td>
         <td>option</td>
       </tr>
-      <tbody>
+    <tbody>
 
-      </tbody>
+    </tbody>
     </thead>
   </table>
   <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
 
-    <script>
-        /* //拦截器
-        //拦截请求
-        axios.interceptors.request.use(function (config) {
-            // 请求发出前执行的方法 
-            return config;
-        }, function (error) {
-            // Do something with request error
-            return Promise.reject(error);
-        });
+  <script>
+    //拦截请求
+    axios.interceptors.request.use(function (config) {
+      // 请求发出前执行的方法 
 
-        // Add a response interceptor
-        //拦截响应
-        axios.interceptors.response.use(function (response) {
-            // 请求成功后第一个调用的方法
-            // Do something with response data
-            if(res.data.ok===0){
-              location.href = '/login'
-            } 
-            return response;
-        }, function (error) {
-            // Any status codes that falls outside the range of 2xx cause this function to trigger
-            // Do something with response error
-            return Promise.reject(error);
-        }); */
-    </script>
+      //!每次发请求之前要给后端token
+      const token = localStorage.getItem("token")
+
+      config.headers.Authorization = `Bearer ${token}`  //不成文规定加beraer
+      //config请求对象
+      return config;
+    }, function (error) {
+      return Promise.reject(error);
+    });
+
+
+    //拦截响应
+    axios.interceptors.response.use(function (response) {
+      // 请求成功后第一个调用的方法
+      console.log(response)
+      //设置localStorage
+      const { authorization } = response.headers
+      authorization && localStorage.setItem("token", authorization)
+
+
+      return response;
+    }, function (error) {
+      // Any status codes that falls outside the range of 2xx cause this function to trigger
+      // Do something with response error
+      console.log('error ',error.response.status)
+      if(error.response.status===401){
+        localStorage.removeItem("token")
+        location.href = "/login"
+      }
+      return Promise.reject(error);
+    });
+  </script>
 
   <script>
     const username = document.querySelector("#username")
@@ -88,22 +99,22 @@
 
     const list = document.querySelector('.list')
 
-    exitBtn.onclick=()=>{
-      fetch("/api/logout").then(res=>res.json()).then(res=>{
+    exitBtn.onclick = () => {
+      /* fetch("/api/logout").then(res=>res.json()).then(res=>{
         console.log(res )
         if(res.ok===1){
           location.href='/login'
         }
-      })
-
-      /* axios.get("/api/logout").then(res=>{
-        
       }) */
+
+      localStorage.removeItem("token")
+      location.href= "/login"
+      console.log("??????")
     }
 
 
-    addBtn.addEventListener("click",()=>{
-      
+    addBtn.addEventListener("click", () => {
+
       /* fetch("/api/users",{
         method:"POST",
         headers:{
@@ -121,23 +132,18 @@
         }
       }) */
 
-      axios.post("/api/user",{
-        username:username.age,
-        password:password.value,
-        age:age.value
-      }).then(res=>{
-        console.log(res.data)
-
-        //这个是logout，send(session被摧毁)
-        if(res.data.ok===0){
-          location.href='/login'
-        }
+      axios.post("/api/users", {
+        username: username.value,
+        password: password.value,
+        age: age.value
+      }).then(res => {
+        console.log(res)
       })
     })
 
-    updateBtn.addEventListener("click",()=>{
+    updateBtn.addEventListener("click", () => {
       console.log("???")
-      fetch("/api/users/640c45cec483400536ecc0e7",{
+      /* fetch("/api/users/640c45cec483400536ecc0e7",{
         method:"PUT",
         headers:{
           "Content-Type":"application/json"
@@ -152,23 +158,37 @@
         if(res.ok===0){
           location.href='/login'
         }
+      }) */
+
+      axios.put("/api/users/640c45cec483400536ecc0e7", {
+        username: '修改',
+        password: '修改',
+        age: 100000
+      }).then(res => {
+        console.log(res.data)
       })
     })
 
 
-    deleteBtn.addEventListener("click",()=>{
-      fetch('/api/users/640d9cd6272b9dc55d24aa6e',{
+
+
+    deleteBtn.addEventListener("click", () => {
+      /* fetch('/api/users/640d9cd6272b9dc55d24aa6e',{
         method:"DELETE"
       }).then(res=>res.json()).then(res=>{
         console.log(res)
         if(res.ok===0){
           location.href='/login'
         }
+      }) */
+
+      axios.delete("/api/users/640d9cd6272b9dc55d24aa6e").then(res => {
+        console.log(res)
       })
     })
 
 
-    fetch("/api/users").then(res=>res.json()).then(res=>{
+    /* fetch("/api/users").then(res=>res.json()).then(res=>{
       console.log(res)
       if(res.ok===0){
           location.href='/login'
@@ -192,22 +212,45 @@
       `).join("")
       
     })
+ */
+    axios.get("/api/users").then(res => {
+      if (res.data.ok === 0) {
+        location.href = '/login'
+      }
 
-    function deleteThis(id){
+      list.innerHTML = res.data.map(item => `
+      <span>${item.username}</span>
+      <span>${item.password}</span>
+      `)
+
+      let tbody = document.querySelector("tbody")
+      tbody.innerHTML = res.data.map(item => `
+        <tr>
+            <td>${item._id}</td>
+            <td>${item.username}</td>
+            <td>${item.age}</td>
+            <td>
+              <button onclick="deleteThis('${item._id}')">删除此项</button>  
+            </td>
+        </tr>
+      `).join("")
+    })
+
+    function deleteThis(id) {
       console.log('aaa')
-      fetch(`/api/users/${id}`,{
-        method:"DELETE"
-      }).then(res=>res.json()).then(res=>{
-        
+      fetch(`/api/users/${id}`, {
+        method: "DELETE"
+      }).then(res => res.json()).then(res => {
+
         console.log(res)
-        if(res.ok===0){
-          location.href='/login'
-        }else{
+        if (res.ok === 0) {
+          location.href = '/login'
+        } else {
           location.reload()
         }
       })
     }
-    
+
 
   </script>
 </body>

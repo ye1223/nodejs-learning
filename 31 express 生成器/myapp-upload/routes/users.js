@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-//let UserModel = require("../model/UserModel")
+let UserModel = require("../model/UserModel")
 
 
 /* GET users listing. */
@@ -22,5 +22,5 @@ router.get('/users',UserController.getUser)
 router.post('/login',UserController.login)
 
 //退出，销毁session
-router.get('/ logout',UserController.logout)
+router.get('/logout',UserController.logout)
 module.exports = router;

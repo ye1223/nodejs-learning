@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-
 <body>
     <h1>登录页面</h1>
     <div>
@@ -23,26 +21,24 @@
     <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
 
     <script>
-        //拦截器
         //拦截请求
         axios.interceptors.request.use(function (config) {
             // 请求发出前执行的方法 
+
+            
             return config;
         }, function (error) {
-            // Do something with request error
             return Promise.reject(error);
         });
 
-        // Add a response interceptor
+
         //拦截响应
         axios.interceptors.response.use(function (response) {
             // 请求成功后第一个调用的方法
-            // Do something with response data
             console.log(response)
             //设置localStorage
             const {authorization} = response.headers
             authorization && localStorage.setItem("token",authorization)
-
 
 
             return response;
@@ -58,43 +54,18 @@
         const username = document.querySelector("#username")
         const password = document.querySelector("#password")
 
-        loginBtn.addEventListener("click", () => {
-            /* fetch('/api/login',{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({
-                    username:username.value,
-                    password:password.value
-                })
-            }).then(res=>res.json()).then(res=>{
-                console.log(res)
-                if(res==="数据库有此人--登录!"){
-                    //!存储token
-                    localStorage. 
-                    location.href = "/"
+        loginBtn.addEventListener("click",()=>{
+            axios.post('/api/login',{
+                username:username.value,
+                password:password.value
+            }).then(res=>{
+                if(res.data.ok ===1){
+                    location.href="/"
                 }else{
                     alert("用户名||密码错误")
                 }
-            })  */
-
-            axios.post("/api/login", {
-                username: username.value,
-                password: password.value
-            }).then(res => {
-                console.log(res.headers)//后端返回响应头
-                console.log("res.data", res.data) //后端返回正文
-
-                if (res.data === "数据库有此人--登录!") {
-                    //存储token
-                    location.href = '/'
-                } else {
-                    alert("用户名||密码错误")
-                }
             })
-        })
+        }) 
     </script>
 </body>
-
 </html>
