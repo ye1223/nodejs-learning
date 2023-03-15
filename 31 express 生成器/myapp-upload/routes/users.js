@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-let UserModel = require("../model/UserModel")
+//let UserModel = require("../model/UserModel")
+
+const multer  = require('multer')
+const upload = multer({ dest: 'public/uploads/' })
 
 
 /* GET users listing. */
@@ -10,7 +13,7 @@ router.get('/', function(req, res, next) {
 });
 
 const UserController = require('../controllers/UserController')
-router.post('/users',UserController.addUser)
+router.post('/users',upload.single("avatar"),UserController.addUser)
 
 router.put('/users/:myid',UserController.updateUser)
 

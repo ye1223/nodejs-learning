@@ -25,6 +25,8 @@
     密码：<input id="password" type="password">
     <br>
     年龄：<input type="number" id="age">
+    <br>
+    头像：<input type="file" id="avatar">
   </div>
 
   <button class="addBtn">添加用户</button>
@@ -92,6 +94,7 @@
     const username = document.querySelector("#username")
     const password = document.querySelector("#password")
     const age = document.querySelector("#age")
+    const avatar = document.querySelector("#avatar")
     const addBtn = document.querySelector(".addBtn")
     const updateBtn = document.querySelector(".updateBtn")
     const deleteBtn = document.querySelector(".deleteBtn")
@@ -132,11 +135,26 @@
         }
       }) */
 
-      axios.post("/api/users", {
+      console.log(username.value,password.value,age.value,avatar.files)
+      /* axios.post("/api/users", {
         username: username.value,
         password: password.value,
-        age: age.value
+        age: age.value,
+        //avatar:,
       }).then(res => {
+        console.log(res)
+      }) */
+
+      //!用表单的形式上传
+      const formsdata = new FormData()
+      formsdata.append("username",username.value)
+      formsdata.append("password",password.value)
+      formsdata.append("age",age.value)
+      formsdata.append("avatar",avatar.files[0])
+
+      axios.post("/api/users",formsdata,{
+        "Content-Type":"multipart/form-data"
+      }).then(res=>{
         console.log(res)
       })
     })
@@ -218,10 +236,10 @@
         location.href = '/login'
       }
 
-      list.innerHTML = res.data.map(item => `
+      /* list.innerHTML = res.data.map(item => `
       <span>${item.username}</span>
       <span>${item.password}</span>
-      `)
+      `) */
 
       let tbody = document.querySelector("tbody")
       tbody.innerHTML = res.data.map(item => `
@@ -229,6 +247,7 @@
             <td>${item._id}</td>
             <td>${item.username}</td>
             <td>${item.age}</td>
+            <td><img style='width:50px;' src='${item.avatar}'></img></td>
             <td>
               <button onclick="deleteThis('${item._id}')">删除此项</button>  
             </td>
