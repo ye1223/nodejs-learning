@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="ipt">
+    <button id="btn_get">get</button>
+    <button id="btn_post">post</button>
+
+    <script>
+        let ipt = document.querySelector('#ipt')
+        let btn_get = document.querySelector('#btn_get')
+        let btn_post = document.querySelector('#btn_post')
+
+        btn_get.onclick = () =>{
+            fetch(`/user?content=${ipt.value}`).then(res=>res.json()).then(res=>{
+                console.log(res)
+            })
+        }
+        btn_post.onclick = () =>{
+            fetch('/user',{
+                method:'POST',
+                body:JSON.stringify({
+                    content:ipt.value
+                }),
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            }).then(res=>res.text()).then(res=>{
+                console.log(res)
+            })
+        }
+    </script>
+</body>
+</html>
